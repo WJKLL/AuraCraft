@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>变形生长菜单 · 勾丰小站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --c-blue: #0080FF;
+      --c-purple: #8B00FF;
+      --c-pink: #FF1493;
+      --c-teal: #20B2AA;
+      --glass-bg: rgba(255, 255, 255, 0.07);
+      --glass-bg-strong: rgba(255, 255, 255, 0.14);
+      --hairline: rgba(255, 255, 255, 0.18);
+      --text: #ffffff;
+      --text-2: rgba(255, 255, 255, 0.74);
+      --text-3: rgba(255, 255, 255, 0.55);
+      --radius: 20px;
+      --ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --font: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+              'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      min-height: 100vh;
+      color: var(--text);
+      background: linear-gradient(160deg, #0d0628 0%, #120a34 100%);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- 背景光斑（贴合站点 aurora 风格，给毛玻璃提供被模糊的内容） ---------- */
+    .aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.28; }
+    .orb.o1 { width: 460px; height: 460px; background: var(--c-blue);   top: -120px; left: -80px; }
+    .orb.o2 { width: 420px; height: 420px; background: var(--c-purple); top: 30%;    right: -120px; }
+    .orb.o3 { width: 380px; height: 380px; background: var(--c-pink);   bottom: -140px; left: 28%; }
+    .orb.o4 { width: 340px; height: 340px; background: var(--c-teal);   top: 55%;    left: -100px; }
+
+    /* ---------- 演示内容（让磨砂有内容可模糊） ---------- */
+    .demo { max-width: 680px; margin: 0 auto; padding: 140px 24px 80px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
+    .brand svg { width: 34px; height: 34px; }
+    .demo h1 { margin-top: 28px; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; }
+    .demo h1 .grad {
+      background: linear-gradient(90deg, var(--c-blue), var(--c-purple), var(--c-pink));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .demo .sub { margin-top: 16px; font-size: 17px; color: var(--text-2); line-height: 1.7; }
+    .demo-cards { margin-top: 44px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+    .demo-card {
+      padding: 24px; border-radius: var(--radius);
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+      border: 1px solid var(--hairline);
+    }
+    .demo-card b { display: block; margin-bottom: 8px; font-size: 16px; font-weight: 700; }
+    .demo-card span { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+    .hint { margin-top: 44px; font-size: 13px; color: var(--text-3); }
+
+    /* ---------- 透明遮罩（点击菜单外部区域关闭） ---------- */
+    .backdrop {
+      position: fixed; inset: 0; z-index: 90;
+      background: transparent;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .backdrop.show { opacity: 1; pointer-events: auto; }
+
+    /* ---------- 触发按钮（固定在右上角） ---------- */
+    .menu-trigger {
+      position: fixed; top: 40px; right: 40px; z-index: 110;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: var(--glass-bg);
+      border: 1px solid var(--hairline);
+      -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+      color: var(--text);
+      font-family: var(--font); font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      transition: background 0.25s ease, transform 0.25s ease;
+      user-select: none; -webkit-user-select: none;
+    }
+    .menu-trigger:hover { background: var(--glass-bg-strong); }
+    .menu-trigger:active { transform: scale(0.95); }
+    .menu-trigger .ico { display: inline-block; transition: transform 0.35s var(--ease); }
+    .menu-trigger[aria-expanded="true"] .ico { transform: rotate(90deg); }
+
+    /* ---------- 变形生长菜单（毛玻璃，从右上角弹性生长） ---------- */
+    .morph-menu {
+      position: fixed; top: 88px; right: 40px; z-index: 100;
+      min-width: 204px;
+      padding: 8px;
+      border-radius: var(--radius);
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(28px); backdrop-filter: blur(28px);
+      border: 1px solid var(--hairline);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      transform-origin: top right;               /* 变形锚点：从右上角生长 */
+      transform: scale(0.3);                     /* 初始状态 */
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.45s var(--ease), opacity 0.35s ease;
+      will-change: transform, opacity;
+    }
+    .morph-menu.open { transform: scale(1); opacity: 1; pointer-events: auto; }
+
+    .menu-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: var(--text-2);
+      font-size: 15px; font-weight: 500;
+      text-decoration: none;
+      /* 生长过程中逐项淡入上移 */
+      opacity: 0; transform: translateY(8px);
+      transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease, opacity 0.3s ease;
+    }
+    .menu-item::before {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--c-blue), var(--c-purple));
+    }
+    .morph-menu.open .menu-item { opacity: 1; transform: translateY(0); }
+    .morph-menu.open .menu-item:nth-child(1) { transition-delay: 0.05s; }
+    .morph-menu.open .menu-item:nth-child(2) { transition-delay: 0.09s; }
+    .morph-menu.open .menu-item:nth-child(3) { transition-delay: 0.13s; }
+    .morph-menu.open .menu-item:nth-child(4) { transition-delay: 0.17s; }
+    .morph-menu.open .menu-item:nth-child(5) { transition-delay: 0.21s; }
+    /* 悬停：轻微左移 + 背景高亮 */
+    .morph-menu.open .menu-item:hover {
+      background: var(--glass-bg-strong);
+      color: var(--text);
+      transform: translateX(-4px);
+    }
+
+    /* 首项「立即咨询」= 站点 CTA 风格（蓝紫渐变药丸） */
+    .menu-item.cta {
+      justify-content: center;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, rgba(0, 128, 255, 0.9), rgba(139, 0, 255, 0.9));
+      color: #fff; font-weight: 700;
+    }
+    .menu-item.cta::before { display: none; }
+    .morph-menu.open .menu-item.cta:hover {
+      background: linear-gradient(135deg, rgba(0, 128, 255, 1), rgba(139, 0, 255, 1));
+      transform: translateX(-4px);
+    }
+
+    /* 窄屏微调（保持可用，不改变核心动画参数） */
+    @media (max-width: 480px) {
+      .menu-trigger { top: 16px; right: 16px; }
+      .morph-menu { top: 64px; right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
+  </div>
+
+  <!-- 透明遮罩：点击外部关闭 -->
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- 触发按钮 -->
+  <button class="menu-trigger" id="menuTrigger" type="button" aria-expanded="false" aria-haspopup="true">
+    <span class="ico">☰</span><span class="txt">菜单</span>
+  </button>
+
+  <!-- 变形生长菜单 -->
+  <nav class="morph-menu" id="morphMenu" aria-label="站点菜单">
+    <a class="menu-item cta" href="service-detail.html?id=consult">立即咨询</a>
+    <a class="menu-item" href="index.html">首页</a>
+    <a class="menu-item" href="about.html">关于我</a>
+    <a class="menu-item" href="services.html">我的副业</a>
+    <a class="menu-item" href="team.html">宿舍成员</a>
+  </nav>
+
+  <!-- 演示内容 -->
+  <main class="demo">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#0080FF"/><stop offset="1" stop-color="#8B00FF"/>
+          </linearGradient>
+        </defs>
+        <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+        <path d="M16 7.5 24.5 16 16 24.5 7.5 16Z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+      <span>勾丰小站</span>
+    </div>
+
+    <h1>iOS 27 风格<br /><span class="grad">变形生长菜单</span></h1>
+    <p class="sub">点击右上角「☰ 菜单」按钮，菜单从按钮右下角弹性生长出来；点外部、按 ESC 或点任意菜单项关闭。</p>
+
+    <div class="demo-cards">
+      <div class="demo-card"><b>液态弹性</b><span>transform 0.45s + cubic-bezier(0.34, 1.56, 0.64, 1)，scale(0.3)→1，带回弹。</span></div>
+      <div class="demo-card"><b>毛玻璃</b><span>backdrop-filter: blur(28px)，磨砂质感贴合站点玻璃风格。</span></div>
+      <div class="demo-card"><b>生长锚点</b><span>transform-origin: top right，从按钮右下角生长展开。</span></div>
+    </div>
+
+    <p class="hint">菜单项链接到站点真实页面（index / about / services / team / service-detail），与本页放在同一目录即可跳转。</p>
+  </main>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('menuTrigger');
+      var menu = document.getElementById('morphMenu');
+      var overlay = document.getElementById('backdrop');
+
+      function setOpen(open) {
+        menu.classList.toggle('open', open);
+        overlay.classList.toggle('show', open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.querySelector('.txt').textContent = open ? '关闭' : '菜单';
+      }
+
+      // 点击按钮：切换开/关
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(!menu.classList.contains('open'));
+      });
+
+      // 点击外部（透明遮罩）：关闭
+      overlay.addEventListener('click', function () { setOpen(false); });
+
+      // ESC：关闭
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+
+      // 点击菜单项后关闭（再跳转）
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { setOpen(false); });
+      });
+    })();
+  </script>
+</body>
+</html>

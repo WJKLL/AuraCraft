@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>(function(){try{var m=localStorage.getItem('ceshi-theme-manual'),t=localStorage.getItem('ceshi-theme');if(m==='1'&&(t==='light'||t==='dark')){document.documentElement.setAttribute('data-theme',t);}else{var s=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',s);}}catch(e){}}());</script>
+  <title>飞机场 · 常用网盘 · 勾丰小站</title>
+  <meta name="description" content="常用网盘官方入口导航，点击跳转对应官网。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css?v=55" />
+  <style>
+    /* ===== 常用网盘列表页专属样式（复用全局设计变量） ===== */
+    .drive-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 18px;            /* 比普通卡片更矮的横向长方形 */
+    }
+    .drive-logo {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: grid; place-items: center;
+      color: #fff; font-size: 13px; font-weight: 700; line-height: 1;
+    }
+    .drive-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+    .drive-name { font-size: 15px; font-weight: 600; color: var(--text-color); }
+    .drive-arrow { margin-left: auto; width: 16px; height: 16px; color: var(--text-muted); transition: transform 0.25s var(--ease); }
+    .drive-item:hover .drive-arrow { transform: translateX(3px); }
+  </style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-inner">
+            <div class="nav-capsule nav-capsule-left">
+      <a class="brand" href="index.html" aria-label="勾丰小站 首页">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <defs><linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#0080FF"/><stop offset="1" stop-color="#8B00FF"/></linearGradient></defs>
+          <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+          <path d="M16 7.5 24.5 16 16 24.5 7.5 16Z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+        <span>勾丰小站</span>
+      </a>
+            </div>
+
+      <div class="nav-capsule nav-capsule-right">
+        <details class="nav-dir">
+          <summary class="nav-dir-trigger" title="页面目录" aria-label="展开页面目录">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </summary>
+<nav class="nav-links" data-nav-links aria-label="主导航">
+        <a href="index.html">首页</a>
+        <a href="about.html">关于我们</a>
+        <a href="services.html">滚木服务</a>
+        <a href="team.html">宿舍成员</a>
+      </nav>
+              </details>
+
+<div class="nav-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换深浅色模式">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.5 6.5 0 0 0 21 12.8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2M12 19.5v2M4.3 4.3l1.4 1.4M18.3 18.3l1.4 1.4M2.5 12h2M19.5 12h2M4.3 19.7l1.4-1.4M18.3 5.7l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="theme-toggle" type="button" data-bg-upload aria-label="设置本地背景" title="设置本地背景">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M3 17l5-5 3 3 3-3 7 7"/></svg>
+        </button>
+        <button class="theme-toggle" type="button" data-bg-reset aria-label="清除本地背景" title="清除本地背景" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg>
+        </button>
+        <a class="btn btn-primary" href="services.html">请不要联系</a>
+        <button class="burger" type="button" data-burger aria-label="打开菜单" aria-expanded="false"><span></span></button>
+            </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 下沉处理：加大顶部留白，让内容相对页面下沉 -->
+    <section class="section" style="padding-top:var(--space-7);">
+      <div class="container" style="max-width:640px;">
+        <div class="page-hero" style="padding-block:0 44px;">
+          <span class="eyebrow">常用网盘 · 官方入口</span>
+          <h1 style="font-size:clamp(2.2rem,5vw,3.2rem);">飞机场</h1>
+          <p>以下均为各网盘官方网站入口，点击跳转官网。</p>
+        </div>
+
+        <!-- ===================== 网盘列表 =====================
+             新增网盘：复制下面任意一个 <a class="card drive-item"> 整块，
+             粘贴到列表里，改 href（官网地址）、logo 和名称即可。 -->
+        <div style="display:grid;gap:12px;">
+
+          <a class="card drive-item" data-glow href="https://www.123pan.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#0080FF,#4F9FFF);">123</span>
+            <span class="drive-name">123 云盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://pan.quark.cn/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#2A4BFF,#1B2E6B);">夸</span>
+            <span class="drive-name">夸克网盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://www.alipan.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#8B00FF,#FF1493);">阿</span>
+            <span class="drive-name">阿里云盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://pan.baidu.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#2932E1,#00BFFF);">百</span>
+            <span class="drive-name">百度网盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://www.lanzou.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#20B2AA,#008080);">蓝</span>
+            <span class="drive-name">蓝奏云</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://cloud.189.cn/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#00A86B,#0080FF);">天</span>
+            <span class="drive-name">天翼云盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://www.weiyun.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#2E5BFF,#00D4FF);">微</span>
+            <span class="drive-name">腾讯微云</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+          <a class="card drive-item" data-glow href="https://pan.xunlei.com/" target="_blank" rel="noopener">
+            <span class="drive-logo" style="background:linear-gradient(135deg,#0099FF,#0050D0);">迅</span>
+            <span class="drive-name">迅雷云盘</span>
+            <svg class="drive-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+
+        </div>
+        <!-- ===================== /网盘列表 ===================== -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+                <a class="brand" href="index.html" style="margin-bottom:16px;">
+            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#0080FF"/><path d="M16 7.5 24.5 16 16 24.5 7.5 16Z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>
+            <span>勾丰小站</span>
+          </a>
+          <p>以人类拟态美学打造的现代宿舍官网，连接宿舍成员。</p>
+        </div>
+        <div class="footer-col">
+          <h4>快速导航</h4>
+          <a href="index.html">首页</a>
+          <a href="about.html">关于我们</a>
+          <a href="services.html">产品服务</a>
+          <a href="team.html">宿舍成员</a>
+        </div>
+        <div class="footer-col">
+          <h4>滚木服务</h4>
+          <a href="service-detail.html?id=cloud">床板服务</a>
+          <a href="service-detail.html?id=ai">人工能智</a>
+          <a href="service-detail.html?id=consult">旮旯咨询</a>
+        </div>
+        <div class="footer-col">
+          <h4>联系方式</h4>
+          <a href="mailto:contact@ceshi.example">contact@ceshi.example</a>
+          <a href="tel:+8600000000000">+86 114514114514</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 勾丰小站 · 宿舍官网。保留所有权利。</span>
+        <span>人类拟态 · Glassmorphism</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=32"></script>
+</body>
+</html>

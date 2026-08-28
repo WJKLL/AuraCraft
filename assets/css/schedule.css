@@ -1,0 +1,223 @@
+/* ==========================================================================
+   课程表样式（周日历 + 完整课程表）
+   ========================================================================== */
+
+/* ---------- 首页 mini 课程表（hero-glass 内） ---------- */
+/* 左上角/右下角方块：沿用页面原卡片（玻璃小胶囊）风格 */
+.hero-glass .sched-pos {
+  position: absolute !important; z-index: 2;
+  padding: 10px 16px; border-radius: var(--radius);
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-strong);
+  -webkit-backdrop-filter: blur(var(--blur-amount)); backdrop-filter: blur(var(--blur-amount));
+  font-size: 13px; font-weight: 600; color: var(--text-color); white-space: nowrap;
+  box-sizing: border-box; transition: background 0.2s var(--ease);
+}
+.hero-glass .sched-pos.tl { top: 16px; left: 16px; }
+.hero-glass .sched-pos.br { bottom: 18px; right: 16px; display: inline-flex; align-items: center; gap: 6px; }
+.hero-glass .sched-pos.br:hover { background: var(--glass-bg-strong); }
+/* 课程列表填充中间区域，可滑动浏览；上下两端渐变淡出（无分割线） */
+.hero-glass .sched-mini-list {
+  position: absolute !important; top: 66px; bottom: 66px;
+  left: 16px; right: 16px; overflow-y: auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+.sched-mini-dayname {
+  font-size: 12px; font-weight: 700; color: var(--text-secondary);
+  margin: 12px 0 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.sched-mini-dayname::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-blue), var(--c-purple));
+}
+/* 每节课 = 一个圆角玻璃小卡片，风格统一 */
+.sched-mini-row {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; margin-bottom: 6px;
+  border-radius: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  font-size: 13px;
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), top 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sched-mini-row:hover { top: -3px; background: var(--glass-bg-strong); border-color: var(--glass-border-strong); }
+.sched-mini-time {
+  flex-shrink: 0; padding: 2px 8px; border-radius: 999px;
+  background: rgba(0, 128, 255, 0.14); color: var(--c-blue);
+  font-size: 11px; font-weight: 700;
+}
+.sched-mini-name { color: var(--text-color); word-break: break-all; }
+.sched-mini-room { margin-left: auto; flex-shrink: 0; color: var(--text-muted); font-size: 12px; }
+.sched-empty { color: var(--text-muted); font-size: 13px; }
+
+/* ---------- 移动端（竖屏）：小课表可读性/直观性优化 ---------- */
+@media (max-width: 768px) {
+  .hero-glass .sched-pos { padding: 8px 12px; font-size: 12px; }
+  .hero-glass .sched-mini-list { top: 58px; bottom: 58px; left: 12px; right: 12px; }
+
+  .sched-mini-dayname { font-size: 13px; margin: 14px 0 8px; }
+  .sched-mini-dayname::before { width: 7px; height: 7px; }
+
+  /* 每节课改成多行小卡片：第一行 节次 + 周次角标，第二行 课程名，第三行 地点 */
+  .sched-mini-row {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+  }
+  .sched-mini-time { order: 1; font-size: 12px; padding: 3px 9px; }
+  .sched-mini-weeks { order: 2; margin-left: auto; font-size: 11px; }
+  .sched-mini-name {
+    order: 3; flex: 1 1 100%;
+    font-size: 14px; font-weight: 600; line-height: 1.3;
+  }
+  .sched-mini-room {
+    order: 4; flex: 1 1 100%;
+    font-size: 12px; margin-left: 0; color: var(--text-muted);
+  }
+}
+
+/* ---------- 移动端浅色：背景模糊被关闭后，用深色描边 + 分层底色强化课表结构 ---------- */
+@media (max-width: 768px) {
+  html[data-theme="light"] .sched-table { background: #e6ecf8; border-color: rgba(23, 11, 68, 0.24); }
+  html[data-theme="light"] .sched-corner,
+  html[data-theme="light"] .sched-day,
+  html[data-theme="light"] .sched-period,
+  html[data-theme="light"] .sched-cell {
+    border-color: rgba(23, 11, 68, 0.24);
+  }
+  html[data-theme="light"] .sched-cell { background: #ffffff; }
+  html[data-theme="light"] .sched-day { background: #c9d5ef; }
+  html[data-theme="light"] .sched-period,
+  html[data-theme="light"] .sched-corner { background: #d9e1f3; }
+  /* 首页 mini 课程小卡：浅色下加描边，避免白卡糊在白底上 */
+  html[data-theme="light"] .sched-mini-row { background: #ffffff; border-color: rgba(23, 11, 68, 0.24); }
+}
+
+/* ---------- 完整课程表 ---------- */
+/* 页面顶部学期信息胶囊标签 */
+.sched-badge {
+  display: inline-block; padding: 6px 14px; border-radius: 999px;
+  font-size: 13px; font-weight: 600; color: var(--text-color);
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-strong);
+}
+.sched-meta {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  padding: 16px; margin-bottom: 20px;
+}
+.sched-meta .field { min-width: 110px; }
+.sched-meta .field input { min-height: 40px; }
+
+.sched-table {
+  overflow-x: auto; border-radius: var(--lg-radius);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  /* 与其它卡片一致的磨砂玻璃 + 投影（含光照，由 main.js 自动注入光斑） */
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-brightness));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat)) brightness(var(--lg-brightness));
+  box-shadow: var(--lg-shadow);
+}
+/* 提升格子文字/格线对比度：格子加一层中性深色底，壁纸被磨砂+压暗后文字更清晰 */
+.sched-cell { background: rgba(128, 130, 160, 0.06); }
+.sched-course { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.sched-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(7, minmax(84px, 1fr));
+  grid-template-rows: 44px repeat(16, 56px);
+  min-width: 720px; /* 手机上横向滚动 */
+}
+.sched-corner, .sched-day, .sched-period, .sched-cell {
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--glass-border);
+}
+.sched-corner { font-size: 12px; color: var(--text-muted); }
+.sched-day { font-size: 13px; font-weight: 700; color: var(--text-color); background: var(--glass-bg-strong); }
+.sched-period { font-size: 11px; color: var(--text-muted); background: var(--glass-bg); }
+.sched-cell { cursor: pointer; transition: background 0.15s var(--ease); }
+.sched-cell:hover { background: var(--glass-bg-strong); }
+.sched-course {
+  position: relative;
+  z-index: 2; margin: 2px; border-radius: 8px;
+  padding: 6px 8px; cursor: pointer; color: #fff; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.sched-course-name { font-size: 12px; font-weight: 600; line-height: 1.25; word-break: break-all; }
+.sched-course-room { font-size: 11px; opacity: 0.88; margin-top: 2px; }
+/* 课程块上的单双周角标 */
+.sched-course-weeks {
+  position: absolute; top: 4px; right: 4px;
+  min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22); color: #fff;
+  font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+}
+.sched-course-weeks.w-odd { background: rgba(0, 128, 255, 0.6); }
+.sched-course-weeks.w-even { background: rgba(139, 0, 255, 0.65); }
+/* 首页 mini 列表里的单双周小标签 */
+.sched-mini-weeks {
+  flex-shrink: 0; padding: 1px 7px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  background: rgba(139, 0, 255, 0.2); color: var(--c-purple);
+  border: 1px solid rgba(139, 0, 255, 0.4);
+}
+.sched-mini-weeks.w-odd { background: rgba(0, 128, 255, 0.18); color: var(--c-blue); border-color: rgba(0, 128, 255, 0.4); }
+
+/* ---------- 添加/编辑弹层 ---------- */
+.sched-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.sched-modal[hidden] { display: none; }
+.sched-modal-card {
+  width: 100%; max-width: 420px; padding: 24px; border-radius: var(--lg-radius);
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-strong);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  box-shadow: var(--lg-shadow);
+}
+.sched-form { display: grid; gap: 12px; margin: 16px 0; }
+.sched-form label {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.sched-form-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sched-form select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%; min-height: 40px; padding: 8px 28px 8px 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--input-bg);
+  border: 1px solid var(--glass-border-strong);
+  color: var(--text-color);
+  cursor: pointer;
+  /* 自定义下拉箭头（灰色 chevron，深浅主题通用） */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238080a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}
+.sched-form select option { background: var(--glass-bg-strong); color: var(--text-color); }
+.sched-form select:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sched-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+/* 卡片颜色选择 */
+.sched-form-colors { display: flex; flex-direction: column; gap: 8px; }
+.sched-form-label { font-size: 13px; color: var(--text-secondary); }
+.sched-color-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sched-color {
+  width: 30px; height: 30px; border-radius: 50%; padding: 0;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.sched-color:hover { transform: scale(1.12); }
+.sched-color.is-active { border-color: var(--text-color); box-shadow: 0 0 0 2px var(--body-bg); }
+.sched-color.sw-auto {
+  width: auto; height: 30px; padding: 0 14px; border-radius: 999px;
+  font-size: 12px; line-height: 28px; color: var(--text-secondary);
+  background: var(--glass-bg-strong); border: 1px solid var(--glass-border-strong);
+}
+.sched-color.sw-auto.is-active { border-color: var(--text-color); }
